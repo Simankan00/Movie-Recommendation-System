@@ -2,6 +2,7 @@ import pickle
 import streamlit as st
 import pandas as pd
 import requests
+import bz2
 
 # OMDb Poster Fetch Function using API key
 def fetch_poster_by_title(title, year=None):
@@ -50,7 +51,16 @@ def recommend(movie):
 # Load data
 movies_dict = pickle.load(open('movie_dict.pkl', 'rb'))
 movies = pd.DataFrame(movies_dict)
-similarity = pickle.load(open('similarity.pkl', 'rb'))
+
+
+
+def load_compressed_pickle(file_path):
+    with bz2.BZ2File(file_path, 'rb') as f:
+        return pickle.load(f)
+
+# Load the compressed similarity file
+similarity = load_compressed_pickle('similarity_compressed.pbz2')
+
 
 # Streamlit UI
 st.title('🎬 Movie Recommender System')
